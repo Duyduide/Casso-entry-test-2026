@@ -1,0 +1,44 @@
+# Environment
+.env
+*.env
+.env.*
+!.env.example
+
+# Google credentials
+credentials.json
+*.json
+!package.json
+client_secret_*.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+venv/
+.venv/
+.env
+.casso-env/
+.credentials.json
+
+# Docker volumes / data
+postgres_data/
+
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

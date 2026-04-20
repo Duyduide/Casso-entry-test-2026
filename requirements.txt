@@ -1,0 +1,27 @@
+# ── Web framework ─────────────────────────────────────────────────────────
+fastapi==0.111.1
+uvicorn[standard]==0.30.1
+pydantic-settings==2.3.4
+
+# ── Database ──────────────────────────────────────────────────────────────
+sqlalchemy==2.0.30
+asyncpg==0.29.0
+
+# ── Zalo Bot SDK ──────────────────────────────────────────────────────────
+python-zalo-bot==0.1.9
+
+# ── Gemini SDK (simple chat, không cần LangChain) ─────────────────────────
+google-generativeai==0.7.2
+
+# ── AI / LangChain ────────────────────────────────────────────────────────
+langchain==0.2.6
+langchain-core==0.2.10
+langchain-openai==0.1.14
+langchain-google-genai==1.0.7
+
+# ── Google APIs ───────────────────────────────────────────────────────────
+google-api-python-client==2.134.0
+google-auth==2.30.0
+
+# ── PayOS ─────────────────────────────────────────────────────────────────
+payos

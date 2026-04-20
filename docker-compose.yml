@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: casso_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: casso
+      POSTGRES_PASSWORD: casso_secret
+      POSTGRES_DB: casso_tea
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U casso -d casso_tea"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    container_name: casso_web
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      # Mount credentials file for Google Sheets (replace with secrets in prod)
+      - ./credentials.json:/app/credentials.json:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # Override DATABASE_URL to use Docker internal hostname
+      DATABASE_URL: postgresql+asyncpg://casso:casso_secret@db:5432/casso_tea
+
+volumes:
+  postgres_data:
