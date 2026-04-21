@@ -19,6 +19,7 @@ class Order(Base):
     __tablename__ = "orders"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, index=True)
+    payment_code: Mapped[int | None] = mapped_column(Integer, nullable=True, unique=True, index=True)
     zalo_user_id: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
     customer_info: Mapped[dict | None] = mapped_column(JSON, nullable=True)  # {phone, address}
     order_details: Mapped[list | None] = mapped_column(JSON, nullable=True)  # [{name, size, quantity, price}]

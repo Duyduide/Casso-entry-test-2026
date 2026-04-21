@@ -13,6 +13,7 @@ the message in a BackgroundTask to avoid Zalo's 5-second timeout.
 import asyncio
 import json
 import logging
+import random
 import re
 from contextlib import asynccontextmanager
 from typing import Any
@@ -115,7 +116,7 @@ async def _handle_admin_command(
         try:
             order.status = OrderStatus.CONFIRMED
             await db.commit()
-            payment_url = await payos_service.create_payment_link(order.id, order.total_amount)
+            payment_url = await payos_service.create_payment_link(order.payment_code, order.total_amount)
             await zalo_service.send_text_message(
                 order.zalo_user_id,
                 f"🎉 Đơn #{order.id} đã được xác nhận!\n"
@@ -210,12 +211,22 @@ async def _handle_message(
             phone = str(order_data.get("phone", "")).strip()
             address = str(order_data.get("address", "")).strip()
 
+            # Sinh mã thanh toán 6 chữ số duy nhất
+            while True:
+                payment_code = random.randint(100000, 999999)
+                collision = await db.execute(
+                    select(Order).where(Order.payment_code == payment_code)
+                )
+                if collision.scalar_one_or_none() is None:
+                    break
+
             order = Order(
                 zalo_user_id=sender_id,
                 customer_info={"phone": phone, "address": address},
                 order_details=items,
                 total_amount=total,
                 status=OrderStatus.PENDING,
+                payment_code=payment_code,
             )
             db.add(order)
             await db.commit()
@@ -334,7 +345,7 @@ async def payos_webhook(
         return JSONResponse({"message": "OK"})
 
     # Lấy Order từ DB
-    result = await db.execute(select(Order).where(Order.id == int(order_code)))
+    result = await db.execute(select(Order).where(Order.payment_code == int(order_code)))
     order: Order | None = result.scalar_one_or_none()
     if order is None:
         logger.warning("PayOS webhook: order #%s not found in DB.", order_code)
