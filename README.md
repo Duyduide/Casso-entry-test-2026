@@ -53,5 +53,5 @@ docker compose up -d --build
 Sau khi server lên, đăng ký webhook PayOS (chạy 1 lần):
 
 ```
-POST /ops/confirm-payos-webhook?webhook_url=https://<your-domain>/webhook/payos
+POST webhook_url=https://<your-domain>/webhook/payos
 ```
